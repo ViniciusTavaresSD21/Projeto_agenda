@@ -1,9 +1,12 @@
+from os import system
+
+
 def marcar_textos(texto, cor=None, negrito=None):
     cor = cor.lower() if cor != None else cor
-    
+
     if cor == "preto":
         cor = 30
-        
+
     elif cor == "vermelho":
         cor = 31
 
@@ -23,8 +26,8 @@ def marcar_textos(texto, cor=None, negrito=None):
         cor = 36
 
     elif cor == "branco":
-        cor = 37 
-    
+        cor = 37
+
     else:
         cor == None
 
@@ -35,23 +38,54 @@ def marcar_textos(texto, cor=None, negrito=None):
         return f"\033[1;{cor}m{texto}\033[m"
     else:
         return f"\033[{cor}m{texto}\033[m"
-    
 
-    
 
 def linha_menu(simbolo="=", tamanho=60, cor="branco", negrito=None):
-    print(marcar_textos(simbolo*tamanho, cor, negrito))
+    print(marcar_textos(simbolo * tamanho, cor, negrito))
 
 
-def menu_texto(texto, simbolo="=", tamanho=60, cor="branco", cor_texto="branco", negrito=None, negrito_texto=None):
+def menu_texto(
+    texto,
+    simbolo="=",
+    tamanho=60,
+    cor="branco",
+    cor_texto="branco",
+    negrito=None,
+    negrito_texto=None,
+):
     linha_menu(simbolo, tamanho, cor, negrito)
-    print(f"{texto:^{tamanho}}")
+    print(marcar_textos(f"{texto:^{tamanho}}", cor_texto, negrito_texto))
     linha_menu(simbolo, tamanho, cor, negrito)
 
 
-def menu_de_opcoes(texto, simbolo="=", tamanho=60, cor="branco", cor_texto="branco", negrito=None, negrito_texto=None, opcoes=[]):
+def menu_de_opcoes(
+    texto,
+    simbolo="=",
+    tamanho=60,
+    cor="branco",
+    cor_texto="branco",
+    negrito=None,
+    negrito_texto=None,
+    opcoes=[],
+):
     menu_texto(texto, simbolo, tamanho, cor, cor_texto, negrito, negrito_texto)
     contador = 1
     for op in opcoes:
-        print(f"{contador}° {op}")
+        print(f"\033[1m[{contador}] {op}\033[m")
         contador += 1
+    linha_menu(simbolo, tamanho, cor)
+
+
+def visualizar_toda_agenda(dict):
+    menu_texto(
+        "Todos os registro",
+        cor="ciano",
+        cor_texto="verde",
+        negrito=True,
+        negrito_texto=True,
+    )
+    for item in dict:
+        print(f"ID: {item["id"]}")
+        print(f"DATA: {item["data"]}")
+        print(item["registro"])
+        linha_menu(tamanho=60, cor="verde")

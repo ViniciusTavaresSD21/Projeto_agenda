@@ -2,6 +2,7 @@ import sqlite3
 from datetime import datetime
 
 conexao = sqlite3.connect('registros_diarios.db')
+conexao.row_factory = sqlite3.Row
 cursor = conexao.cursor()
 
 cursor.execute("""
@@ -36,6 +37,11 @@ class Registro:
         cursor.execute("UPDATE Diario SET registro = ? WHERE id = ?;", (self._texto, id) )
         conexao.commit()
         conexao.close()
+
+    def ver_todos(self):
+        cursor.execute("SELECT * FROM Diario")
+        todos_os_registros = cursor.fetchall()
+        return todos_os_registros
     
 
 class Atividade:
@@ -74,3 +80,4 @@ class Atividade:
         cursor.execute("UPDATE atividade SET prazo = ? WHERE id = ?;", (self._prazo, id))
         cursor.commit()
         conexao.close()
+
