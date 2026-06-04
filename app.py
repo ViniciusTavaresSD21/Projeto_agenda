@@ -1,39 +1,24 @@
+import questionary
 from datetime import date
 from os import system
 from time import sleep
-from formatacao.funcoes_formatacao import (
+from formatacao_e_menu import (
     marcar_textos,
     menu_de_opcoes,
     menu_texto,
     linha_menu,
     visualizar_toda_agenda,
 )
-from validade_autenticacao.validacao import validar
-from banco_de_dados.criacao import Atividade, Registro
+from validacao import validar
+from agenda import Atividade, Registro
 
 try:
     while True:
-        while True:
-            system("cls")
-            menu_de_opcoes(
-                "MENU",
-                "=",
-                50,
-                "azul",
-                "verde",
-                True,
-                True,
-                ["Agenda", "Meus projetos", "Bloco de notas"],
-            )
-            opcao = input("Opção: ")
-            if validar("1234", opcao) == True:
-                break
-            print("Escolha uma das opções.")
-            sleep(2)
-
+        menu_texto("Menu")
+        opcao = questionary.select("", choices=["Agenda", "Meus projetos", "Bloco de notas"], instruction="Use as setas do teclado").ask()
         system("cls")
 
-        if opcao == "1":
+        if opcao == "Agenda":
             try:
                 while True:
                     menu_de_opcoes(
@@ -128,7 +113,7 @@ try:
                 True,
                 True,
                 ["Ver notas", "Criar nota", "Apagar nota", "Sair"],
-            )
+          )
 
 except Exception as erro:
     print(f"Erro: {erro}")

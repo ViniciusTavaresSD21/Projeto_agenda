@@ -87,5 +87,7 @@ def visualizar_toda_agenda(dict):
     for item in dict:
         print(f"ID: {item["id"]}")
         print(f"DATA: {item["data"]}")
-        print(item["registro"])
+        print()
+        print("Registro:")
+        print(marcar_textos(item["registro"], "amarelo", True))
         linha_menu(tamanho=60, cor="verde")
