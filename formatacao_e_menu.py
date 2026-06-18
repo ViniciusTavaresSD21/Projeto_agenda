@@ -78,16 +78,16 @@ def menu_de_opcoes(
 
 def visualizar_toda_agenda(dict):
     menu_texto(
-        "Todos os registro",
+        "Todos os registro", tamanho=50,
         cor="ciano",
         cor_texto="verde",
         negrito=True,
         negrito_texto=True,
     )
     for item in dict:
-        print(f"ID: {item["id"]}")
-        print(f"DATA: {item["data"]}")
+        print(marcar_textos(f"ID: {item["id"]}", negrito=True))
+        print(marcar_textos(f"DATA: {item["data"]}", negrito=True))
         print()
-        print("Registro:")
-        print(marcar_textos(item["registro"], "amarelo", True))
-        linha_menu(tamanho=60, cor="verde")
+        print(marcar_textos("Registro:", negrito=True))
+        print(marcar_textos(item["registro"], "preto", True))
+        linha_menu(tamanho=50, cor="verde")
