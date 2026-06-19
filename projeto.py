@@ -61,6 +61,7 @@ class Atividade:
         self._status = "Não concluído"
         self._nome_da_pasta = nome_da_pasta
 
+
     def criar(self, prazo):
         with sqlite3.connect("registros_diarios.db") as conexao:
             cursor = conexao.cursor()
@@ -70,6 +71,7 @@ class Atividade:
         )
         conexao.commit()
 
+
     def deletar(self, id):
         with sqlite3.connect("registros_diarios.db") as conexao:
             cursor = conexao.cursor()
@@ -77,6 +79,7 @@ class Atividade:
             f"""DELETE FROM {self._nome_da_pasta} WHERE id = ?""", (id,)
         )
         conexao.commit()
+
 
     def ler_atividade(self, id):
         with sqlite3.connect("registros_diarios.db") as conexao:
@@ -87,6 +90,7 @@ class Atividade:
         conexao.close()
         return linha
 
+
     def editar_titulo(self, id):
         with sqlite3.connect("registros_diarios.db") as conexao:
             cursor = conexao.cursor()
@@ -96,6 +100,7 @@ class Atividade:
         )
         conexao.commit()
 
+
     def editar_descricao(self, id):
         with sqlite3.connect("registros_diarios.db") as conexao:
             cursor = conexao.cursor()
@@ -104,6 +109,7 @@ class Atividade:
             (self._descricao, id),
         )
         conexao.commit()
+
 
     def editar_prazo(self, id):
         with sqlite3.connect("registros_diarios.db") as conexao:
