@@ -1,6 +1,3 @@
-from os import system
-
-
 def marcar_textos(texto, cor=None, negrito=None):
     cor = cor.lower() if cor != None else cor
 

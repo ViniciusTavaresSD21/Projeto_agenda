@@ -7,14 +7,6 @@ def validar(valores_autorizados, valor_a_ser_validado):
         False
 
 
-def isdigit(number):
-    try:
-        int(number)
-        return True
-    except:
-        return False
-    
-
 def validar_nome_tabela(nome_do_projeto):
     try:
         with sqlite3.connect('registros_diarios.db') as conexao:
@@ -34,3 +26,27 @@ def validar_nome_tabela(nome_do_projeto):
     except Exception as erro:
         print(f"ERRO: {erro}")
         return
+
+
+def validar_titulo_atividade(pasta_do_projeto, titulo_da_atividade):
+    try:
+        with sqlite3.connect("projetos.db") as conexao:
+            cursor = conexao.cursor()
+            titulos = cursor.execute(f"""SELECT titulo from {pasta_do_projeto}""").fetchall()
+        if titulo_da_atividade in titulos:
+            True
+        else:
+            return False
+    except Exception as erro:
+        print(f"ERRO: {erro}")
+
+
+def validar_formato_data(data):
+    if len(data) != 10 or data.count('/') != 2:
+        return
+    termos = data.split('/')
+    for item in termos:
+        if item.isdigit() == False:
+            break
+    else:
+        return True
