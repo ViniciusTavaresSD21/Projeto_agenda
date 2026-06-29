@@ -1,4 +1,6 @@
 import sqlite3
+from datetime import date
+
 
 def validar(valores_autorizados, valor_a_ser_validado):
     if valor_a_ser_validado in valores_autorizados:
@@ -42,11 +44,36 @@ def validar_titulo_atividade(pasta_do_projeto, titulo_da_atividade):
 
 
 def validar_formato_data(data):
-    if len(data) != 10 or data.count('/') != 2:
-        return
-    termos = data.split('/')
-    for item in termos:
-        if item.isdigit() == False:
-            break
-    else:
-        return True
+    try:
+        if len(data) != 10 or data.count('/') != 2:
+            return False
+        termos = data.split('/')
+
+        for item in termos:
+            if item.isdigit() == False:
+                return False
+            
+        if int(termos[0]) > 31:
+            return False
+        
+        elif int(termos[1]) > 12:
+            return False
+        else:
+            return True
+    except:
+        return False
+
+
+def validar_tempo_da_data(data, anterior_ou_posterior="posterior"):
+    data_objeto = date.strptime(data, "%d/%m/%Y")
+    if anterior_ou_posterior == "posterior":
+        if data_objeto >= date.today():
+            return True
+        else:
+            return False
+    elif anterior_ou_posterior == "anterior":
+        if data_objeto <= date.today():
+            return True
+        else:
+            return False
+    

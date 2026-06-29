@@ -75,7 +75,8 @@ def menu_de_opcoes(
 
 def visualizar_toda_agenda(dict):
     menu_texto(
-        "Todos os registro", tamanho=50,
+        "Todos os registro",
+        tamanho=50,
         cor="ciano",
         cor_texto="verde",
         negrito=True,

@@ -9,19 +9,19 @@ conexao = sqlite3.connect("projetos.db")
 
 
 class Projeto:
-    '''
+    """
     Cria, deleta e renomeia tabelas com colunas prontas para receber atividades.
-    '''
+    """
+
     def __init__(self, nome_da_pasta="Sem_titulo"):
         self._nome_da_pasta = nome_da_pasta
-
 
     def criar_projeto(self):
         with sqlite3.connect("projetos.db") as conexao:
             cursor = conexao.cursor()
             cursor.execute(
-            f"""CREATE TABLE IF NOT EXISTS {self._nome_da_pasta} (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT NOT NULL, descricao TEXT NOT NULL, prazo TEXT NOT NULL, status TEXT NOT NULL)"""
-        )
+                f"""CREATE TABLE IF NOT EXISTS {self._nome_da_pasta} (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT NOT NULL, descricao TEXT NOT NULL, prazo TEXT NOT NULL, status TEXT NOT NULL)"""
+            )
         conexao.commit()
 
     def deletar_projeto(self):
@@ -38,13 +38,15 @@ class Projeto:
         try:
             with sqlite3.connect("projetos.db") as conexao:
                 cursor = conexao.cursor()
-                cursor.execute(f"""ALTER TABLE {self._nome_da_pasta} RENAME TO {novo_nome}""")
+                cursor.execute(
+                    f"""ALTER TABLE {self._nome_da_pasta} RENAME TO {novo_nome}"""
+                )
                 conexao.commit()
         except Exception as erro:
             print(f"ERRO: {erro}")
 
     def ver_todos_os_projetos(self):
-        with sqlite3.connect('projetos.db') as conexao:
+        with sqlite3.connect("projetos.db") as conexao:
             cursor = conexao.cursor()
             cursor.execute("""
                 SELECT name
@@ -80,13 +82,18 @@ def menu_projeto():
         )
         opcao = questionary.select(
             "",
-            choices=["Criar Projeto", "Deletar Projeto", "Renomear Projeto", "Ver todos", "Sair"],
+            choices=[
+                "Criar Projeto",
+                "Deletar Projeto",
+                "Renomear Projeto",
+                "Ver todos",
+                "Sair",
+            ],
             qmark="",
             instruction="Use as setas do teclado",
             style=estilo,
         ).ask()
         linha_menu(tamanho=65, cor="azul", negrito=True)
-
 
         if opcao == "Criar Projeto":
             while True:
@@ -96,7 +103,7 @@ def menu_projeto():
                 nome = str(
                     questionary.text("Nome do projeto: ", qmark="", style=estilo).ask()
                 )
-                if nome == "sair":
+                if nome.lower() == "sair":
                     break
 
                 elif validar_nome_tabela(nome) == True:
@@ -117,17 +124,24 @@ def menu_projeto():
                     sleep(2)
                     system("cls")
 
-
         elif opcao == "Deletar Projeto":
             while True:
                 print(
-                    marcar_textos("Selecione 'Sair' para voltar pro menu.", "preto", None)
+                    marcar_textos(
+                        "Selecione 'Sair' para voltar pro menu.", "preto", None
+                    )
                 )
                 lista_nomes_projeto = Projeto().ver_todos_os_projetos()
                 lista_nomes_projeto.append("Sair")
-                nome = questionary.select("Selecione o projeto:", lista_nomes_projeto, qmark='', instruction=' ', style=estilo).ask()
+                nome = questionary.select(
+                    "Selecione o projeto:",
+                    lista_nomes_projeto,
+                    qmark="",
+                    instruction=" ",
+                    style=estilo,
+                ).ask()
 
-                if nome == "Sair":
+                if nome.lower() == "Sair":
                     break
                 else:
                     Projeto(nome).deletar_projeto()
@@ -142,25 +156,34 @@ def menu_projeto():
                     sleep(2)
                     break
 
-
         elif opcao == "Renomear Projeto":
             while True:
                 print(
-                    marcar_textos("Selecione 'Sair' para voltar pro menu.", "preto", None)
+                    marcar_textos(
+                        "Selecione 'Sair' para voltar pro menu.", "preto", None
+                    )
                 )
 
                 lista_nomes_projeto = Projeto().ver_todos_os_projetos()
                 lista_nomes_projeto.append("Sair")
-                nome = questionary.select("Selecione o projeto que vai ser renomeado:", lista_nomes_projeto, instruction=' ', style=estilo, qmark='').ask()
+                nome = questionary.select(
+                    "Selecione o projeto que vai ser renomeado:",
+                    lista_nomes_projeto,
+                    instruction=" ",
+                    style=estilo,
+                    qmark="",
+                ).ask()
 
-                if nome == "Sair":
+                if nome.lower() == "sair":
                     break
 
                 else:
                     novo_nome = str(
-                    questionary.text("Novo nome do projeto: ", qmark="", style=estilo).ask()
-                )
-                    if novo_nome == "sair":
+                        questionary.text(
+                            "Novo nome do projeto: ", qmark="", style=estilo
+                        ).ask()
+                    )
+                    if novo_nome.lower() == "sair":
                         break
 
                     else:
@@ -168,10 +191,15 @@ def menu_projeto():
                         linha_menu(tamanho=65, cor="azul", negrito=True)
                         print(marcar_textos("Processando...", "amarelo", True))
                         sleep(2)
-                        print(marcar_textos(f'O projeto "{nome}" foi renomeado para "{novo_nome}.', "verde", True))
+                        print(
+                            marcar_textos(
+                                f'O projeto "{nome}" foi renomeado para "{novo_nome}.',
+                                "verde",
+                                True,
+                            )
+                        )
                         sleep(2)
                         break
-
 
         elif opcao == "Ver todos":
             while True:
@@ -183,9 +211,5 @@ def menu_projeto():
                 input()
                 break
 
-
         elif opcao == "Sair":
             break
-
-
-menu_projeto()
