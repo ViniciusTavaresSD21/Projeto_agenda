@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 def marcar_textos(texto, cor=None, negrito=None):
     cor = cor.lower() if cor != None else cor
 
@@ -89,3 +91,18 @@ def visualizar_toda_agenda(dict):
         print(marcar_textos("Registro:", negrito=True))
         print(marcar_textos(item["registro"], "preto", True))
         linha_menu(tamanho=50, cor="verde")
+
+
+
+def converter_string_horario_em_timedelta(horario):
+    try:
+        lista = horario.split(":")
+        if len(lista) == 1:
+            return timedelta(hours=int(lista[0]))
+        elif len(lista) == 2:
+            return timedelta(hours=int(lista[0]), minutes=int(lista[1]))
+        elif len(lista) == 3:
+            return timedelta(hours=int(lista[0]), minutes=int(lista[1]), seconds=int(lista[2]))
+    except:
+        print("Escreva o horario no formato hora/minuto/segundo.")
+    

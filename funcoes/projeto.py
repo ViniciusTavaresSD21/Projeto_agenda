@@ -1,7 +1,9 @@
 import sqlite3
 import questionary
+import sys
 from time import sleep
 from os import system
+sys.path.append('/Users/vinicius/Documents/GitHub/Projeto_agenda')
 from validacao import validar_nome_tabela
 from formatacao_e_menu import menu_texto, linha_menu, marcar_textos
 

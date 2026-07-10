@@ -1,14 +1,13 @@
-from projeto import Projeto
+import sys
 import sqlite3
 import questionary
+sys.path.append('/Users/vinicius/Documents/GitHub/Projeto_agenda')
+
+from funcoes.projeto import Projeto
 from time import sleep
 from os import system
-from validacao import (
-    validar_titulo_atividade,
-    validar_formato_data,
-    validar_tempo_da_data,
-)
-from formatacao_e_menu import menu_texto, linha_menu, marcar_textos
+from validacao import validar_formato_data, validar_titulo_atividade, validar_tempo_da_data
+from formatacao_e_menu import linha_menu, menu_texto, marcar_textos
 from textwrap import fill
 
 conexao = sqlite3.connect("projetos.db")

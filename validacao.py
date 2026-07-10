@@ -35,6 +35,7 @@ def validar_titulo_atividade(pasta_do_projeto, titulo_da_atividade):
         with sqlite3.connect("projetos.db") as conexao:
             cursor = conexao.cursor()
             titulos = cursor.execute(f"""SELECT titulo from {pasta_do_projeto}""").fetchall()
+            
         if titulo_da_atividade in titulos:
             True
         else:
@@ -58,6 +59,7 @@ def validar_formato_data(data):
         
         elif int(termos[1]) > 12:
             return False
+        
         else:
             return True
     except:

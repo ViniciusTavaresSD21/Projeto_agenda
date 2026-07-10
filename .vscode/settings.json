@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./validacao_e_formatacao"
+    ]
+}
