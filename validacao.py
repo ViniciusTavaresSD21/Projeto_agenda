@@ -1,6 +1,6 @@
 import sqlite3
 from datetime import date
-
+from datetime import timedelta
 
 def validar(valores_autorizados, valor_a_ser_validado):
     if valor_a_ser_validado in valores_autorizados:
@@ -79,3 +79,11 @@ def validar_tempo_da_data(data, anterior_ou_posterior="posterior"):
         else:
             return False
     
+    
+def avaliar_estudos(horas_de_estudo):
+    if horas_de_estudo < timedelta(hours=2):
+        return "Seu tempo de estudo foi horrível."
+    elif horas_de_estudo > timedelta(hours=2) and horas_de_estudo < timedelta(hours=3):
+        return "Seu tempo de estudo foi bom."
+    else:
+        return "Seu tempo de estudo foi Excelente."

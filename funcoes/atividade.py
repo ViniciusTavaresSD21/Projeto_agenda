@@ -419,6 +419,3 @@ def menu_atividade(pasta_do_projeto):
 
         elif opcao == "Sair":
             break
-
-
-menu_atividade("teste")
