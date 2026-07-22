@@ -25,10 +25,10 @@ with sqlite3.connect("estudos.db") as conexao:
 
 estilo = questionary.Style(
     [
-        ("question", "fg:red"),
+        ("question", "fg:cyan bold"),
         ("highlighted", "fg:yellow bold"),
         ("instruction", "fg:gray"),
-        ("pointer", "fg:red"),
+        ("pointer", "fg:cyan"),
         ("", "fg:green"),
     ]
 )
@@ -573,5 +573,5 @@ def menu_estudos():
                     input(marcar_textos("Aperte enter para sair.", "preto", True))
                     break
 
-
-menu_estudos()
+        elif opcao == "Sair":
+            break

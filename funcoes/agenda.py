@@ -1,13 +1,14 @@
 import sqlite3
-from time import sleep
-from datetime import date
-from os import system
 import questionary
 import sys
-sys.path.append('/Users/vinicius/Documents/GitHub/Projeto_agenda')
-from validacao import validar_formato_data
+
+from time import sleep
+from datetime import date, datetime
+from os import system
+from textwrap import fill
 from formatacao_e_menu import linha_menu, menu_texto, marcar_textos
 
+sys.path.append('/Users/vinicius/Documents/GitHub/Projeto_agenda')
 
 conexao = sqlite3.connect("agenda.db")
 
@@ -87,20 +88,21 @@ class Agenda:
                 registros = cursor.fetchall()
                 linha_menu(tamanho=60, cor="azul", negrito=True)
                 for registro in registros:
-                    print(f"Data do registro: {registro["data"]}")
+                    print(f"{marcar_textos("Data do registro:", "azul", True)} {marcar_textos(registro["data"], "amarelo")}")
                     print()
-                    print(f"{registro["registro"]}")
-                linha_menu(tamanho=60, cor="azul", negrito=True)
+                    print(f"{marcar_textos("Registro:", "azul", True)}")
+                    print(f"{marcar_textos(fill(registro["registro"], 50), "verde", True)}")
+                    linha_menu(tamanho=60, cor="azul", negrito=True)
         except Exception as erro:
             print(f"ERRO: {erro}")
 
 
 estilo = questionary.Style(
     [
-        ("question", "fg:red"),
+        ("question", "fg:cyan bold"),
         ("highlighted", "fg:yellow bold"),
         ("instruction", "fg:gray"),
-        ("pointer", "fg:red"),
+        ("pointer", "fg:cyan"),
         ("", "fg:green"),
     ]
 )
@@ -108,7 +110,6 @@ estilo = questionary.Style(
 
 def menu_agenda():
     while True:
-        conexao
         system("cls")
         menu_texto(
             "AGENDA",
@@ -120,7 +121,7 @@ def menu_agenda():
         )
         opcao = questionary.select(
             "",
-            choices=["Adicionar registro", "Deletar", "editar", "Ver todos", "Sair"],
+            choices=["Adicionar registro", "Deletar", "editar", "Meus registros", "Sair"],
             qmark="",
             instruction="Use as setas do teclado.",
             style=estilo,
@@ -128,24 +129,38 @@ def menu_agenda():
 
         if opcao == "Adicionar registro":
             while True:
-                linha_menu(tamanho=60, cor="azul", negrito=True)
+                system("cls")
+                menu_texto(
+                    "Adicionando registro",
+                    tamanho=60,
+                    cor="azul",
+                    cor_texto="verde",
+                    negrito=True,
+                    negrito_texto=True,
+                )
+
                 data = questionary.text(
-                    "Em qual data você deseja fazer um registro?",
-                    qmark=" ",
-                    instruction="",
+                    "Em qual data você deseja fazer o registro?",
+                    qmark="",
+                    instruction="", 
+                    style=estilo
                 ).ask()
+
                 if data.lower() == "sair":
                     break
-
-                elif validar_formato_data(data) == True:
-
+                
+                try:
+                    datetime.strptime(data, "%d/%m/%Y")
                     linha_menu(tamanho=60, cor="azul", negrito=True)
                     anotacao = questionary.text(
-                        "Digite:", qmark="", instruction=""
+                        "Digite:", qmark="", instruction="", style=estilo
                     ).ask()
+                    if anotacao.lower() == "sair":
+                        break
+
                     Agenda(anotacao, data).registrar()
                     linha_menu(tamanho=60, cor="azul", negrito=True)
-                    print("Processando...")
+                    print(marcar_textos("Processando...", "amarelo", True))
                     sleep(2)
                     print(
                         marcar_textos("Registro adicionado com sucesso.", "verde", True)
@@ -153,14 +168,24 @@ def menu_agenda():
                     sleep(2)
                     system("cls")
                     break
-                else:
-                    print("Digite no formato (dia/mês/ano)")
+
+                except:
+                    linha_menu(tamanho=60, cor="azul", negrito=True)
+                    print(marcar_textos("Digite a data no formato (dia/mês/ano).", "amarelo", True))
                     sleep(2)
                     system("cls")
 
         elif opcao == "Deletar":
             while True:
-                linha_menu(tamanho=60, cor="azul", negrito=True)
+                system('cls')
+                menu_texto(
+                    "Deletando registros",
+                    tamanho=60,
+                    cor="azul",
+                    cor_texto="verde",
+                    negrito=True,
+                    negrito_texto=True,
+                )
                 lista_de_registros = Agenda().todos_os_registros()
                 lista_de_registros.append("Sair")
                 registro = questionary.select(
@@ -168,14 +193,16 @@ def menu_agenda():
                     lista_de_registros,
                     qmark="",
                     instruction=" ",
+                    style=estilo
                 ).ask()
+
                 if registro.lower() == "sair":
                     break
 
                 else:
                     Agenda().deletar(registro)
                     linha_menu(tamanho=60, cor="azul", negrito=True)
-                    print("Processando...")
+                    print(marcar_textos("Processando...", "amarelo", True))
                     sleep(2)
                     print(
                         marcar_textos("Registro deletado com sucesso.", "verde", True)
@@ -186,6 +213,15 @@ def menu_agenda():
 
         elif opcao == "editar":
             while True:
+                system('cls')
+                menu_texto(
+                    "Editando Registros",
+                    tamanho=60,
+                    cor="azul",
+                    cor_texto="verde",
+                    negrito=True,
+                    negrito_texto=True,
+                )
                 linha_menu(tamanho=60, cor="azul", negrito=True)
                 lista_de_registros = Agenda().todos_os_registros()
                 lista_de_registros.append("Sair")
@@ -194,6 +230,7 @@ def menu_agenda():
                     lista_de_registros,
                     qmark="",
                     instruction=" ",
+                    style=estilo
                 ).ask()
                 if registro.lower() == "sair":
                     break
@@ -206,26 +243,28 @@ def menu_agenda():
 
                     Agenda(novo_texto).editar(registro)
                     linha_menu(tamanho=60, cor="azul", negrito=True)
-                    print("Processando...")
+                    print(marcar_textos("Processando...", "amarelo", True))
                     sleep(2)
                     print(marcar_textos("Registro editado com sucesso.", "verde", True))
                     sleep(2)
                     system("cls")
                     break
 
-        elif opcao == "Ver todos":
+        elif opcao == "Meus registros":
             while True:
+                system('cls')
+                menu_texto(
+                    "Meus registros",
+                    tamanho=60,
+                    cor="azul",
+                    cor_texto="verde",
+                    negrito=True,
+                    negrito_texto=True,
+                )
                 Agenda().visualizar_todos()
-                input("Aperte enter para sair.")
+                input(marcar_textos("Aperte enter para sair", "preto"))
                 system("cls")
                 break
 
         elif opcao == "Sair":
-            linha_menu(tamanho=60, cor="azul", negrito=True)
-            print("Encerrando...")
-            sleep(2)
-            print(marcar_textos("Programa encerrado.", "amarelo", True))
             break
-
-
-menu_agenda()

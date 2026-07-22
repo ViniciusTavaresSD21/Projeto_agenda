@@ -93,7 +93,6 @@ def visualizar_toda_agenda(dict):
         linha_menu(tamanho=50, cor="verde")
 
 
-
 def converter_string_horario_em_timedelta(horario):
     try:
         lista = horario.split(":")

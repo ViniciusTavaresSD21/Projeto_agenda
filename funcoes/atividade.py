@@ -2,8 +2,6 @@ import sys
 import sqlite3
 import questionary
 sys.path.append('/Users/vinicius/Documents/GitHub/Projeto_agenda')
-
-from funcoes.projeto import Projeto
 from time import sleep
 from os import system
 from validacao import validar_formato_data, validar_titulo_atividade, validar_tempo_da_data
@@ -14,22 +12,22 @@ conexao = sqlite3.connect("projetos.db")
 
 estilo = questionary.Style(
     [
-        ("question", "fg:red"),
+        ("question", "fg:cyan bold"),
         ("highlighted", "fg:yellow bold"),
         ("instruction", "fg:gray"),
-        ("pointer", "fg:red"),
+        ("pointer", "fg:cyan"),
         ("", "fg:green"),
     ]
 )
 
 
-class Atividade(Projeto):
+class Atividade():
     def __init__(self, nome_da_pasta, titulo="Sem titulo", descricao="", prazo=None):
         self._titulo = titulo
         self._descricao = descricao
         self._prazo = prazo
         self._status = "Não concluído"
-        super().__init__(nome_da_pasta)
+        self._nome_da_pasta = nome_da_pasta
 
     def criar(self):
         with sqlite3.connect("projetos.db") as conexao:

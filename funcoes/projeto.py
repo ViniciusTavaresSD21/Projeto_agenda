@@ -4,8 +4,10 @@ import sys
 from time import sleep
 from os import system
 sys.path.append('/Users/vinicius/Documents/GitHub/Projeto_agenda')
+
 from validacao import validar_nome_tabela
 from formatacao_e_menu import menu_texto, linha_menu, marcar_textos
+from funcoes.atividade import menu_atividade
 
 conexao = sqlite3.connect("projetos.db")
 
@@ -46,6 +48,7 @@ class Projeto:
                 conexao.commit()
         except Exception as erro:
             print(f"ERRO: {erro}")
+            sleep(10)
 
     def ver_todos_os_projetos(self):
         with sqlite3.connect("projetos.db") as conexao:
@@ -62,10 +65,10 @@ class Projeto:
 
 estilo = questionary.Style(
     [
-        ("question", "fg:red"),
+        ("question", "fg:cyan bold"),
         ("highlighted", "fg:yellow bold"),
         ("instruction", "fg:gray"),
-        ("pointer", "fg:red"),
+        ("pointer", "fg:cyan"),
         ("", "fg:green"),
     ]
 )
@@ -88,7 +91,7 @@ def menu_projeto():
                 "Criar Projeto",
                 "Deletar Projeto",
                 "Renomear Projeto",
-                "Ver todos",
+                "Meus Projetos",
                 "Sair",
             ],
             qmark="",
@@ -99,9 +102,6 @@ def menu_projeto():
 
         if opcao == "Criar Projeto":
             while True:
-                print(
-                    marcar_textos("Digite 'sair' para voltar pro menu.", "preto", None)
-                )
                 nome = str(
                     questionary.text("Nome do projeto: ", qmark="", style=estilo).ask()
                 )
@@ -128,11 +128,6 @@ def menu_projeto():
 
         elif opcao == "Deletar Projeto":
             while True:
-                print(
-                    marcar_textos(
-                        "Selecione 'Sair' para voltar pro menu.", "preto", None
-                    )
-                )
                 lista_nomes_projeto = Projeto().ver_todos_os_projetos()
                 lista_nomes_projeto.append("Sair")
                 nome = questionary.select(
@@ -143,8 +138,9 @@ def menu_projeto():
                     style=estilo,
                 ).ask()
 
-                if nome.lower() == "Sair":
+                if nome.lower() == "sair":
                     break
+
                 else:
                     Projeto(nome).deletar_projeto()
                     linha_menu(tamanho=65, cor="azul", negrito=True)
@@ -160,12 +156,15 @@ def menu_projeto():
 
         elif opcao == "Renomear Projeto":
             while True:
-                print(
-                    marcar_textos(
-                        "Selecione 'Sair' para voltar pro menu.", "preto", None
-                    )
+                system("cls")
+                menu_texto(
+                    "Renomeando projeto",
+                    tamanho=65,
+                    cor="azul",
+                    cor_texto="verde",
+                    negrito=True,
+                    negrito_texto=True,
                 )
-
                 lista_nomes_projeto = Projeto().ver_todos_os_projetos()
                 lista_nomes_projeto.append("Sair")
                 nome = questionary.select(
@@ -180,37 +179,65 @@ def menu_projeto():
                     break
 
                 else:
-                    novo_nome = str(
-                        questionary.text(
-                            "Novo nome do projeto: ", qmark="", style=estilo
-                        ).ask()
-                    )
-                    if novo_nome.lower() == "sair":
-                        break
-
-                    else:
-                        Projeto(nome).renomear_projeto(novo_nome)
-                        linha_menu(tamanho=65, cor="azul", negrito=True)
-                        print(marcar_textos("Processando...", "amarelo", True))
-                        sleep(2)
-                        print(
-                            marcar_textos(
-                                f'O projeto "{nome}" foi renomeado para "{novo_nome}.',
-                                "verde",
-                                True,
-                            )
+                    while True:
+                        system("cls")
+                        menu_texto(
+                            "Renomeando projeto",
+                            tamanho=65,
+                            cor="azul",
+                            cor_texto="verde",
+                            negrito=True,
+                            negrito_texto=True,
                         )
-                        sleep(2)
-                        break
+                        novo_nome = str(
+                            questionary.text(
+                                "Novo nome do projeto: ", qmark="", style=estilo
+                            ).ask()
+                        )
 
-        elif opcao == "Ver todos":
+                        if novo_nome.lower() == "sair":
+                            break
+
+                        with sqlite3.connect("projetos.db") as conexao:
+                            cursor = conexao.cursor()
+                            cursor.execute(
+                                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                                (novo_nome,)
+                            )
+                            if cursor.fetchone():
+                                linha_menu(tamanho=65, cor="azul", negrito=True)
+                                print(marcar_textos(f"ERRO: A tabela '{novo_nome}' já existe!", "amarelo", True))
+                                sleep(2)
+                                system('cls')
+
+                            else:
+                                Projeto(nome).renomear_projeto(novo_nome)
+                                linha_menu(tamanho=65, cor="azul", negrito=True)
+                                print(marcar_textos("Processando...", "amarelo", True))
+                                sleep(2)
+                                print(
+                                    marcar_textos(
+                                        f'O projeto "{nome}" foi renomeado para "{novo_nome}.',
+                                        "verde",
+                                        True,
+                                    )
+                                )
+                                sleep(2)
+                                break
+                break
+                   
+
+        elif opcao == "Meus Projetos":
             while True:
+                system('cls')
+                menu_texto("MEUS PROJETOS", cor="azul", cor_texto="verde", )
                 lista_de_projetos = Projeto().ver_todos_os_projetos()
-                for projeto in lista_de_projetos:
-                    print(f"*{marcar_textos(projeto, "verde", True)}")
-                linha_menu(tamanho=65, cor="azul", negrito=True)
-                print(marcar_textos("Aperte enter para sair.", "preto"))
-                input()
+                lista_de_projetos.append("Sair")
+                projeto_selecionado = questionary.select("Escolha um projeto: ", lista_de_projetos, qmark="", instruction=" ", style=estilo).ask()
+                if projeto_selecionado == "Sair":
+                    break
+
+                menu_atividade(projeto_selecionado)
                 break
 
         elif opcao == "Sair":
